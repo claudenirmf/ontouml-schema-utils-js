@@ -1,0 +1,27 @@
+{
+  "name": "ontouml-schema-utils-js",
+  "version": "1.0.0",
+  "description": "Javascript Utils for OntoUML Schema Project",
+  "scripts": {
+    "test": "mocha",
+    "start": "node src/utils.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/claudenirmf/ontouml-schema.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/claudenirmf/ontouml-schema/issues"
+  },
+  "homepage": "https://github.com/claudenirmf/ontouml-schema/",
+  "dependencies": {
+    "ajv": "^6.10.0",
+    "ontouml-schema": "file:../ontouml-schema",
+    "vscode-uri": "^2.0.3"
+  },
+  "devDependencies": {
+    "mocha": "^6.0.2"
+  }
+}
