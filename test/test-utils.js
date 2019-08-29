@@ -2,13 +2,14 @@ const validator = require('ontouml-schema');
 const fs = require('fs');
 
 let object = JSON.parse(fs.readFileSync("examples/m1.example.json", 'utf8'));
-let isValid = validator.getValidator()(object);
+var asd = validator.getValidator()
+let isValid = asd({});
 
 if(isValid)
   console.log("Model M1 is VALID!");
 else {
   console.log("Model M1 is INVALID!");
-  console.log(validate.errors);
+  console.log(asd.errors);
 }
 
 object = { ...object, ...require('./../src/models-utils') };
