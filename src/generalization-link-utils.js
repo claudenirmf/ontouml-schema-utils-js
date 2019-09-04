@@ -1,4 +1,4 @@
-const modelUtils = require('./model-utils');
+// const modelUtils = require('./model-utils');
 
 function loadGeneralizationLinkUtilities(generalizationLink,containerModel) {
   // additional fields
@@ -14,10 +14,11 @@ function loadGeneralizationLinkUtilities(generalizationLink,containerModel) {
   generalizationLink.getSpecific = getSpecific;
   generalizationLink.setSpecific = setSpecific;
   generalizationLink.getGeneralizationSets = getGeneralizationSets;
+  generalizationLink.getType = getType;
 }
 
 function isGeneralizationLink() {
-  if(e['@type'] === modelUtils.GENERALIZATION_LINK) {
+  if(e['@type'] === this.model.GENERALIZATION_LINK) {
     return true;
   }
   else {
@@ -44,14 +45,18 @@ function setSpecific(specific) {
 function getGeneralizationSets() {
   if(this.generalizationSets===undefined) {
     this.generalizationSets = [];
-    this.model.generalizationSets.forEach(genset => {
-      if(genset.indexOf(this)!==-1) {
+    Object.values(this.model.generalizationSets).forEach(genset => {
+      if(genset.tuple.indexOf(this)!==-1) {
         this.generalizationSets.push(genset);
       }
     });
   }
 
   return this.generalizationSets;
+}
+
+function getType() {
+  return this["@type"];
 }
 
 module.exports = loadGeneralizationLinkUtilities;

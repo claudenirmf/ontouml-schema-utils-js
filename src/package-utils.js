@@ -1,4 +1,4 @@
-const modelUtils = require('./model-utils');
+// const modelUtils = require('./model-utils');
 
 function loadPackageUtilities(package,containerModel) {
   // additional fields
@@ -9,6 +9,7 @@ function loadPackageUtilities(package,containerModel) {
   // support methods
   package.isPackage = isPackage;
   package.getAllStructuralElements = getAllStructuralElements;
+  package.getType = getType;
 }
 
 function getAllStructuralElements() {
@@ -16,7 +17,7 @@ function getAllStructuralElements() {
 
   this.structuralElements.forEach((e) => {
     if(e.isPackage()) {
-      elements.push(...(e.getAllStructuralElements(e)));
+      elements = [ ...elements, ...e.getAllStructuralElements(e) ];
     }
   })
 
@@ -24,12 +25,16 @@ function getAllStructuralElements() {
 }
 
 function isPackage() {
-  if(e['@type'] === modelUtils.PACKAGE) {
+  if(e['@type'] === this.model.PACKAGE) {
     return true;
   }
   else {
     return false;
   }
+}
+
+function getType() {
+  return this["@type"];
 }
 
 module.exports = loadPackageUtilities;

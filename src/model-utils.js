@@ -1,8 +1,8 @@
 const packageUtils = require('./package-utils');
 const classUtils = require('./class-utils');
 const generalizationLinkUtils = require('./generalization-link-utils');
-const generalizationSetUtils = require('./generalizationSet-utils');
-const propertyUtils = require('./property-utils');
+const generalizationSetUtils = require('./generalization-set-utils');
+// const propertyUtils = require('./property-utils');
 
 function loadModelUtilities(model) {
   model.MODEL = "Model";
@@ -24,17 +24,21 @@ function loadModelUtilities(model) {
   model.resolveModel = resolveModel;
   model.replacegeneralizationLinksReferences = replacegeneralizationLinksReferences;
   model.replaceGeneralizationSetsReferences = replaceGeneralizationSetsReferences;
+
+  model.resolveModel();
 }
 
 function getAllStructuralElements(package) {
   var current = package !== undefined ? package : this;
-  var elements = current.structuralElements;
+  var elements = current.structuralElements ? current.structuralElements : [];
 
-  current.structuralElements.forEach((e) => {
-    if(e['@type'] === this.PACKAGE) {
-      elements = [...elements, ...this.getAllStructuralElements(e)]
-    }
-  })
+  if(current.structuralElements) {
+    current.structuralElements.forEach((e) => {
+      if(e['@type'] === this.PACKAGE) {
+        elements = [...elements, ...this.getAllStructuralElements(e)]
+      }
+    })
+  }
 
   return elements
 }
@@ -43,19 +47,19 @@ function resolveModel() {
   this.getAllStructuralElements().forEach((e) => {
     switch (e["@type"]) {
       case this.PACKAGE:
-        packageUtils.loadPackageUtilities(e,this);
+        packageUtils(e,this);
         this.packages[e.uri] = e;
         break;
       case this.CLASS:
-        classUtils.loadClassUtilities(e,this);
+        classUtils(e,this);
         this.classes[e.uri] = e;
         break;
       case this.GENERALIZATION_LINK:
-        generalizationLinkUtils.loadGeneralizationLinkUtilities(e,this);
+        generalizationLinkUtils(e,this);
         this.generalizationLinks[e.uri] = e;
         break;
       case this.GENERALIZATION_SET:
-        generalizationSetUtils.loadGeneralizationSetUtilities(e,this);
+        generalizationSetUtils(e,this);
         this.generalizationSets[e.uri] = e;
         break;
       // case this.PROPERTY:
@@ -81,7 +85,7 @@ function resolveModel() {
 
 function replacegeneralizationLinksReferences(generalizationLink) {
   const generalUri = generalizationLink.tuple[0];
-  const general = this.classes[generalUri];
+  const general = this.classes[generalUri]; // TODO: include relation types
   const specificUri = generalizationLink.tuple[1];
   const specific = this.classes[specificUri];
 
@@ -99,8 +103,8 @@ function replacegeneralizationLinksReferences(generalizationLink) {
 }
 
 function replaceGeneralizationSetsReferences(generalizationSet) {
-  generalizationSet.forEach((generalizationLinkUri,i) => {
-    const generalizationLink = this.generalizationSets[generalizationLinkUri];
+  generalizationSet.tuple.forEach((generalizationLinkUri,i) => {
+    let generalizationLink = this.generalizationLinks[generalizationLinkUri];
 
     if (generalizationLink) {
       generalizationSet.tuple[i] = generalizationLink;

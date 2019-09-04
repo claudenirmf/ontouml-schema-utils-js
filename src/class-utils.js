@@ -1,4 +1,4 @@
-const modelUtils = require('./model-utils');
+// const modelUtils = require('./model-utils');
 
 function loadClassUtilities(_class,containerModel) {
   // additional fields
@@ -20,10 +20,11 @@ function loadClassUtilities(_class,containerModel) {
   _class.getChildren = getChildren;
   _class.getAncestors = getAncestors;
   _class.getDescendents = getDescendents;
+  _class.getType = getType;
 }
 
 function isClass() {
-  if(e['@type'] === modelUtils.CLASS) {
+  if(e['@type'] === this.model.CLASS) {
     return true;
   }
   else {
@@ -87,7 +88,7 @@ function getAncestors(visitedClasses) {
   this.getParents().forEach(parent => {
     if(visitedClasses.indexOf(parent) === -1) {
       visitedClasses.push(parent)
-      visitedClasses.push(...(parent.getAncestors(visitedClasses)));
+      visitedClasses = [ ...visitedClasses, ...parent.getAncestors(visitedClasses) ];
     }
   });
 
@@ -104,13 +105,18 @@ function getDescendents(visitedClasses) {
   this.getChildren().forEach(child => {
     if(visitedClasses.indexOf(child) === -1) {
       visitedClasses.push(child)
-      visitedClasses.push(...(child.getDescendents(visitedClasses)));
+      visitedClasses = [ ...visitedClasses, ...child.getDescendents(visitedClasses) ];
     }
   });
 
   this.descendents = [ ...visitedClasses ];
 
   return this.descendents;
+}
+
+
+function getType() {
+  return this["@type"];
 }
 
 
