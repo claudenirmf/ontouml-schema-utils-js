@@ -19,7 +19,7 @@
   "homepage": "https://github.com/claudenirmf/ontouml-schema-utils-js/",
   "dependencies": {
     "ajv": "^6.10.0",
-    "ontouml-schema": "file:../ontouml-schema",
+    "ontouml-schema": "git+https://github.com/claudenirmf/ontouml-schema.git",
     "vscode-uri": "^2.0.3"
   },
   "devDependencies": {
